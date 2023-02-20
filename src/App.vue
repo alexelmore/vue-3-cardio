@@ -1,50 +1,79 @@
-
-
-
 <template>
-  <h2>My Course Goal</h2>
-  <!-- Task 1: Output your main course goal with help of the composition API -->
-  <!-- Don't hardcode it into the template, instead hardcode it into the JS code -->
-  <div v-if="showGoals">{{ myGoals.goal }}</div>
-  <h3>OUTPUT COURSE GOAL</h3>
-  <!-- Task 2: Toggle (show/ hide) the goal with help of the button  -->
-  <button @click="toggleGoals">Toggle Goal</button>
-  <!-- Task 3: Manage data in three ways -->
-  <!-- => Separate refs -->
-  <!-- => Ref Object -->
-  <!-- => Reactive Object -->
-  <!-- Task 4: Also solve the assignment with the Options API -->
+  <section class="container">
+    <h2>{{ fullName }}</h2>
+    <h3>{{ myUser.age }}</h3>
+    <button @click="setNewAge">Change Age</button>
+
+    <div>
+      <br />
+      <input type="text" placeholder="First Name" /><br /><br />
+      <input type="text" placeholder="Last Name" />
+    </div>
+  </section>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+// Must import in reactive for all data properties that are objects inside the setup method.
+// Must import computed for computed properties within the setup method
+// Must import watch for watcher properties within the setup method
+import { reactive, computed, watch } from "vue";
+
 export default {
+  // Setup method: takes the place of Options API data properties: data, methods, computed and watcher
   setup() {
-    const myGoals = reactive({
-      goal: "Become a better front end developer",
+    // Data property that is an object, there for it set to reactive
+    const user = reactive({
+      name: "Sara",
+      lastName: "Emami",
+      age: 36,
     });
 
-    const showGoals = ref(false);
-
-    function toggleGoals() {
-      showGoals.value = !showGoals.value;
+    // Vue 3 method
+    function setNewAge() {
+      user.age = 32;
+      user.name = "Snarla";
     }
 
-    return {
-      myGoals,
-      showGoals,
-      toggleGoals,
-    };
+    // Vue 3 computed property
+    const fullName = computed(function () {
+      return `${user.name} ${user.lastName}`;
+    });
+
+    // Vue 3 watcher
+    const myWatcher = watch(
+      // An array of as the first argument, which allows my watcher to watch multiple items
+      [() => user.age, () => user.name],
+      function (newValue, oldValue) {
+        console.log("Old Value:", oldValue);
+        console.log("New Value:", newValue);
+      }
+    );
+
+    // Must return all items that you want displayed or referenced in the template
+    return { myUser: user, setNewAge, fullName, myWatcher };
   },
 };
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family: sans-serif;
 }
+
 body {
-  margin: 3rem;
+  margin: 0;
+}
+
+.container {
+  margin: 3rem auto;
+  max-width: 30rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 1rem;
   text-align: center;
 }
 </style>
