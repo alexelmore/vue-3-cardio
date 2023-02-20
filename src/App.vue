@@ -41,7 +41,7 @@ export default {
 
     // Vue 3 watcher
     const myWatcher = watch(
-      // An array of as the first argument, which allows my watcher to watch multiple items
+      // An array of dependencies as the first argument, which allows my watcher to watch and react to changes on multiple items
       [() => user.age, () => user.name],
       function (newValue, oldValue) {
         console.log("Old Value:", oldValue);
