@@ -1,56 +1,88 @@
 <template>
-  <section class="container">
-    <h2>{{ fullName }}</h2>
-    <h3>{{ myUser.age }}</h3>
-    <button @click="setNewAge">Change Age</button>
-
-    <div>
-      <br />
-      <input type="text" placeholder="First Name" /><br /><br />
-      <input type="text" placeholder="Last Name" />
-    </div>
+  <header>
+    <h1>Expense Tracker</h1>
+  </header>
+  <section>
+    <div>Available Funds: {{ expensesHolder.availableFunds }}</div>
+    <div>Total Expenses: {{ expensesHolder.currentExpenses }}</div>
+    <hr />
+    <div>Funds left: {{ remainingFunds }}</div>
+  </section>
+  <section>
+    <form @submit.prevent="addExpense">
+      <div>
+        <label for="amount">Amount</label>
+        <input
+          id="amount"
+          type="number"
+          v-model="expensesHolder.enteredExpense"
+        />
+      </div>
+      <button>Add Expense</button>
+    </form>
   </section>
 </template>
 
 <script>
-// Must import in reactive for all data properties that are objects inside the setup method.
-// Must import computed for computed properties within the setup method
-// Must import watch for watcher properties within the setup method
-import { reactive, computed, watch } from "vue";
-
+import { reactive, watch, computed } from "vue";
 export default {
-  // Setup method: takes the place of Options API data properties: data, methods, computed and watcher
+  /* Challenge: Take the below code that is written using Vue 2's Options API and convert so that it uses Vue 3's Composition API and setup method */
+
+  // Below is the Vue 2 Options API approach
+  //   data() {
+  //     return {
+  //       availableFunds: 100,
+  //       currentExpenses: 0,
+  //       enteredExpense: 0,
+  //     };
+  //   },
+  //   computed: {
+  //     remainingFunds() {
+  //       return this.availableFunds - this.currentExpenses;
+  //     },
+  //   },
+  //   methods: {
+  //     addExpense() {
+  //       this.currentExpenses += this.enteredExpense;
+  //     },
+  //   },
+  //   watch: {
+  //     remainingFunds(val) {
+  //       if (val < 0) {
+  //         alert("You are broke!");
+  //       }
+  //     },
+  //   },
+
+  // Below is the Vue 3 Composition approach
+
   setup() {
-    // Data property that is an object, there for it set to reactive
-    const user = reactive({
-      name: "Sara",
-      lastName: "Emami",
-      age: 36,
+    const expensesHolder = reactive({
+      availableFunds: 100,
+      currentExpenses: 0,
+      enteredExpense: 0,
     });
 
-    // Vue 3 method
-    function setNewAge() {
-      user.age = 32;
-      user.name = "Snarla";
+    const remainingFunds = computed(function () {
+      return +expensesHolder.availableFunds - +expensesHolder.currentExpenses;
+    });
+
+    function addExpense() {
+      expensesHolder.currentExpenses += expensesHolder.enteredExpense;
     }
 
-    // Vue 3 computed property
-    const fullName = computed(function () {
-      return `${user.name} ${user.lastName}`;
+    const watchFunds = watch(remainingFunds, function (newValue, oldValue) {
+      if (newValue <= 0 || oldValue <= 0) {
+        alert("You are broke!");
+      }
     });
 
-    // Vue 3 watcher
-    const myWatcher = watch(
-      // An array of dependencies as the first argument, which allows my watcher to watch and react to changes on multiple items
-      [() => user.age, () => user.name],
-      function (newValue, oldValue) {
-        console.log("Old Value:", oldValue);
-        console.log("New Value:", newValue);
-      }
-    );
-
-    // Must return all items that you want displayed or referenced in the template
-    return { myUser: user, setNewAge, fullName, myWatcher };
+    return {
+      remainingFunds,
+      expensesHolder,
+      addExpense,
+      watchFunds,
+    };
   },
 };
 </script>
@@ -59,21 +91,51 @@ export default {
 * {
   box-sizing: border-box;
 }
-
 html {
   font-family: sans-serif;
 }
-
 body {
   margin: 0;
 }
-
-.container {
-  margin: 3rem auto;
-  max-width: 30rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+header {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #30006e;
+  color: white;
+}
+section {
+  margin: 2rem auto;
+  max-width: 35rem;
   padding: 1rem;
-  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  border-radius: 12px;
+}
+
+form div {
+  margin: 1rem 0;
+}
+input {
+  width: 100%;
+  padding: 0.15rem;
+}
+label {
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+button {
+  background-color: #30006e;
+  border: 1px solid #30006e;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1.5rem;
+  color: white;
+}
+button:hover,
+button:active {
+  background-color: #5819ac;
+  border-color: #5819ac;
 }
 </style>
