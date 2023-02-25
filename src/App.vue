@@ -16,10 +16,15 @@
         v-model="myUser.middleName"
       />
       <br /><br />
-      <input type="text" placeholder="Last Name" v-model="myUser.lastName" />
+      <input type="text" placeholder="Last Name" ref="lastNameInput" />
       <br /><br />
       <input type="Number" placeholder="Age" v-model="myUser.age" />
     </div>
+
+    <br /><br />
+    <button @click="setLastName">Confirm Last Name</button>
+    <br /><br />
+
     <br /><br />
     <button @click="setNewAge">Increase Age By One Year</button>
     <br /><br />
@@ -33,6 +38,9 @@ import { ref, reactive, computed, watch } from "vue";
 export default {
   // Vue 3 Setup Method -- Replaces Vue 2 data() Property
   setup() {
+    // A Reference To The lastNameInput Template Ref
+    const lastNameInput = ref(null);
+
     // Vue 3 Reactive Property -- Use For Objects
     const myUser = reactive({
       firstName: "Sara",
@@ -47,6 +55,10 @@ export default {
     // Vue 3 Method -- Can Set New Values To Ref Or Reactive Data Properties
     function setNewAge() {
       myUser.age++;
+    }
+    // A Function That Set myUser's lastName Property To Our Template Ref That Is Bound To The Input
+    function setLastName() {
+      myUser.lastName = lastNameInput.value.value;
     }
 
     // Vue 3 Computed Property -- Read Only Property -- Cannot Set New Values To Ref Or Reactive Data Properties
@@ -72,8 +84,10 @@ export default {
       myUser,
       gender,
       setNewAge,
+      setLastName,
       fullName,
       ssEligible,
+      lastNameInput,
     };
   },
 };
