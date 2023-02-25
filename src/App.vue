@@ -1,87 +1,79 @@
 <template>
-  <header>
-    <h1>Expense Tracker</h1>
-  </header>
-  <section>
-    <div>Available Funds: {{ expensesHolder.availableFunds }}</div>
-    <div>Total Expenses: {{ expensesHolder.currentExpenses }}</div>
-    <hr />
-    <div>Funds left: {{ remainingFunds }}</div>
-  </section>
-  <section>
-    <form @submit.prevent="addExpense">
-      <div>
-        <label for="amount">Amount</label>
-        <input
-          id="amount"
-          type="number"
-          v-model="expensesHolder.enteredExpense"
-        />
-      </div>
-      <button>Add Expense</button>
-    </form>
+  <section class="container">
+    <h2>Name: {{ fullName }}</h2>
+    <h3>Age:{{ myUser.age }}</h3>
+    <h4>Gender: {{ gender }}</h4>
+    <br /><br />
+    <div>
+      <input
+        type="text"
+        placeholder="First Name"
+        v-model="myUser.firstName"
+      /><br /><br />
+      <input
+        type="text"
+        placeholder="Middle Name"
+        v-model="myUser.middleName"
+      />
+      <br /><br />
+      <input type="text" placeholder="Last Name" v-model="myUser.lastName" />
+      <br /><br />
+      <input type="Number" placeholder="Age" v-model="myUser.age" />
+    </div>
+    <br /><br />
+    <button @click="setNewAge">Increase Age By One Year</button>
+    <br /><br />
+
+    <div v-if="ssEligible">SOCIAL SECURITY IS APPROVED!</div>
   </section>
 </template>
 
 <script>
-import { reactive, watch, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 export default {
-  /* Challenge: Take the below code that is written using Vue 2's Options API and convert so that it uses Vue 3's Composition API and setup method */
-
-  // Below is the Vue 2 Options API approach
-  //   data() {
-  //     return {
-  //       availableFunds: 100,
-  //       currentExpenses: 0,
-  //       enteredExpense: 0,
-  //     };
-  //   },
-  //   computed: {
-  //     remainingFunds() {
-  //       return this.availableFunds - this.currentExpenses;
-  //     },
-  //   },
-  //   methods: {
-  //     addExpense() {
-  //       this.currentExpenses += this.enteredExpense;
-  //     },
-  //   },
-  //   watch: {
-  //     remainingFunds(val) {
-  //       if (val < 0) {
-  //         alert("You are broke!");
-  //       }
-  //     },
-  //   },
-
-  // Below is the Vue 3 Composition approach
-
+  // Vue 3 Setup Method -- Replaces Vue 2 data() Property
   setup() {
-    const expensesHolder = reactive({
-      availableFunds: 100,
-      currentExpenses: 0,
-      enteredExpense: 0,
+    // Vue 3 Reactive Property -- Use For Objects
+    const myUser = reactive({
+      firstName: "Sara",
+      middleName: "Joe",
+      lastName: "Emami",
+      age: 36,
     });
 
-    const remainingFunds = computed(function () {
-      return +expensesHolder.availableFunds - +expensesHolder.currentExpenses;
-    });
+    // Vue 3 Ref Property -- Use For Non Object Data Items
+    const gender = ref("Female");
 
-    function addExpense() {
-      expensesHolder.currentExpenses += expensesHolder.enteredExpense;
+    // Vue 3 Method -- Can Set New Values To Ref Or Reactive Data Properties
+    function setNewAge() {
+      myUser.age++;
     }
 
-    const watchFunds = watch(remainingFunds, function (newValue, oldValue) {
-      if (newValue <= 0 || oldValue <= 0) {
-        alert("You are broke!");
-      }
+    // Vue 3 Computed Property -- Read Only Property -- Cannot Set New Values To Ref Or Reactive Data Properties
+    const fullName = computed(function () {
+      return `${myUser.firstName} ${myUser.middleName} ${myUser.lastName}`;
     });
 
+    const ssEligible = computed(function () {
+      return +myUser.age >= 62;
+    });
+
+    // Vue 3 Watch Property
+    watch([gender, myUser], function (newValue, oldValue) {
+      console.log(newValue, oldValue);
+    });
+
+    setTimeout(() => {
+      gender.value = "Non-Binary";
+    }, 2000);
+
+    // Must return any data that you wish to expose in the component's template
     return {
-      remainingFunds,
-      expensesHolder,
-      addExpense,
-      watchFunds,
+      myUser,
+      gender,
+      setNewAge,
+      fullName,
+      ssEligible,
     };
   },
 };
@@ -91,51 +83,21 @@ export default {
 * {
   box-sizing: border-box;
 }
+
 html {
   font-family: sans-serif;
 }
+
 body {
   margin: 0;
 }
-header {
-  width: 100%;
-  height: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #30006e;
-  color: white;
-}
-section {
-  margin: 2rem auto;
-  max-width: 35rem;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  border-radius: 12px;
-}
 
-form div {
-  margin: 1rem 0;
-}
-input {
-  width: 100%;
-  padding: 0.15rem;
-}
-label {
-  font-weight: bold;
-  margin: 0.5rem 0;
-}
-button {
-  background-color: #30006e;
-  border: 1px solid #30006e;
-  font: inherit;
-  cursor: pointer;
-  padding: 0.5rem 1.5rem;
-  color: white;
-}
-button:hover,
-button:active {
-  background-color: #5819ac;
-  border-color: #5819ac;
+.container {
+  margin: 3rem auto;
+  max-width: 30rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 1rem;
+  text-align: center;
 }
 </style>
