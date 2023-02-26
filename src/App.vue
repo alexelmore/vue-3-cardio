@@ -1,8 +1,12 @@
 <template>
   <section class="container">
-    <h2>Name: {{ fullName }}</h2>
-    <h3>Age:{{ myUser.age }}</h3>
-    <h4>Gender: {{ gender }}</h4>
+    <UserData
+      :age="myUser.age"
+      :gender="gender"
+      :firstName="myUser.firstName"
+      :middleName="myUser.middleName"
+      :lastName="myUser.lastName"
+    />
     <br /><br />
     <div>
       <input
@@ -35,7 +39,12 @@
 
 <script>
 import { ref, reactive, computed, watch } from "vue";
+import UserData from "./components/UserData.vue";
 export default {
+  components: {
+    UserData,
+  },
+
   // Vue 3 Setup Method -- Replaces Vue 2 data() Property
   setup() {
     // A Reference To The lastNameInput Template Ref
