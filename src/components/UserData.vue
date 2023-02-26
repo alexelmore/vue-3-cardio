@@ -5,7 +5,17 @@
 </template>
 
 <script>
-import { computed } from "vue";
+// Lifecyle Hooks imported in from Vue
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  onBeforeUnmount,
+  onUnmounted,
+  onUpdated,
+  onBeforeUpdate,
+} from "vue";
+
 export default {
   name: "UserName",
   props: {
@@ -35,6 +45,12 @@ export default {
   // Context is the second of the two parameters that gets passed to the setup method.
   setup(props, context) {
     console.log(context);
+    console.log("onBeforeMount:", onBeforeMount);
+    console.log("onMounted:", onMounted);
+    console.log("onBeforeUnmount:", onBeforeUnmount);
+    console.log("onUnmounted:", onUnmounted);
+    console.log("onUpdated:", onUpdated);
+    console.log("onBeforeUpdate:", onBeforeUpdate);
     const fullName = computed(function () {
       return `${props.firstName} ${props.middleName} ${props.lastName}`;
     });
