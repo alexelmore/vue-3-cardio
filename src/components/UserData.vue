@@ -31,7 +31,10 @@ export default {
     },
   },
   // Props is the first of two parameters that gets passed to the setup method. The props parameter allows you to access any props that were passed down to the component by its parent component.
-  setup(props) {
+
+  // Context is the second of the two parameters that gets passed to the setup method.
+  setup(props, context) {
+    console.log(context);
     const fullName = computed(function () {
       return `${props.firstName} ${props.middleName} ${props.lastName}`;
     });
